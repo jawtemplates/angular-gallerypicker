@@ -10,7 +10,7 @@
      * Angular module gallerypicker for wordpress gallery
      * 
      * @author jawtemplates
-     * @version 1.0
+     * @version 1.1
      */
 
 
@@ -21,9 +21,9 @@
      * #jaw_gallerypicker
      */
     var jaw_gallerypicker = angular.module('jaw.gallerypicker', []);
-    
+
     /* global jaw_gallerypicker: false */
-    
+
     /**
      * @ngdoc directive
      * @name gallerypicker
@@ -57,11 +57,12 @@
 
                 var media = media || new Array();
                 var elementInput = angular.element(element.children()[0]);
+                var galleryState = 'gallery-edit';
 
                 wp.media.jaw_jaw_gallerypicker = {
                     select: function() {
                         var ids = '';
-                        if (scope.componentPicker != undefined) {
+                        if (scope.componentPicker != undefined || scope.componentPicker == '') {
                             jQuery.each(scope.componentPicker, function(key, val) {
                                 ids += val.id + ', ';
                             });
@@ -101,16 +102,24 @@
 
                     },
                     frame: function() {
-                        if (this._frame) {
+                        //If is blank element - open ADD to gallery
+                        if (scope.componentPicker == '') {
+                            galleryState = 'gallery-library'
+                        // If is element open second time - open edit gallery
+                        }else if(this._frame && galleryState == 'gallery-library'){
+                            galleryState = 'gallery-edit';
+                        // If is element opened third times ane more - use the same _frame (with edit gallery)
+                        }else if(this._frame){
                             return this._frame;
                         }
+
                         var selection = this.select();
 
                         //Attributes for open wordpress mediapicker
                         this._frame = wp.media({
                             id: 'jaw_jaw_gallerypicker',
                             frame: 'post',
-                            state: 'gallery-edit',
+                            state: galleryState,
                             title: wp.media.view.l10n.editGalleryTitle,
                             editing: true,
                             multiple: true,
@@ -146,7 +155,6 @@
                         }
                     }
                 };
-
                 jQuery(wp.media.jaw_jaw_gallerypicker.init);
 
             }
