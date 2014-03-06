@@ -11,10 +11,10 @@ Using
 -----
 Add to your form this directive:
 
-```echo '<div gallerypicker name="NAME" ng-model="gallery"  ng-init="gallery = JSON.parse(\'' . addslashes(str_replace('"', '\'', $meta)) . '\');" ></div>';```
+``` echo '<div gallerypicker name="NAME" ng-model="gallery"  ng-init="gallery = JSON.parse(\'' . addslashes(str_replace('"', '\'', $meta)) . '\');" ></div>'; ```
 
 You must have linked also mce-view.js (wordpress library).  
 
-```wp_enqueue_script('mce-view');```
+``` wp_enqueue_script('mce-view'); ```
 
 In post (custom post) editor is linked automatically by WP.
