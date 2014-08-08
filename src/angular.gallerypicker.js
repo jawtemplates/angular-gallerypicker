@@ -10,7 +10,7 @@
      * Angular module gallerypicker for wordpress gallery
      * 
      * @author jawtemplates
-     * @version 1.1
+     * @version 1.2
      */
 
 
@@ -48,7 +48,7 @@
             restrict: 'A',
             template: '<div class="jaw_gallerypicker" >' +
                     '<input type="hidden"  name="{{ inputName }}" ng-model="componentPicker" value="{{ componentPicker }}" />' +
-                    '<div class="imgs"><span ng-repeat="(i, images) in componentPicker"><img src="{{images.url}}" /></span></div>' +
+                    '<div class="imgs"><span ng-repeat="(i, images) in componentPicker"><img ng-src="{{images.url}}" /></span></div>' +
                     '<div class="button jaw-insert-media add_media" ng-click="edit_gallery()"><i class="icon-plus"></i> Edit gallery</div>' +
                     '</div>',
             link: function(scope, element, attrs, ngModel) {
@@ -63,13 +63,14 @@
                 wp.media.jaw_jaw_gallerypicker = {
                     select: function() {
                         var ids = '';
-                        if (scope.componentPicker != undefined || scope.componentPicker == '') {
+                        if (!(scope.componentPicker == undefined || scope.componentPicker == '')) {
                             jQuery.each(scope.componentPicker, function(key, val) {
                                 ids += val.id + ', ';
                             });
+
                             var shortcode = wp.shortcode.next('gallery', '[gallery ids="' + ids + '" ]'),
                                     attachments, selection;
-
+                            
                             // Bail if we didn't match the shortcode or all of the content.
                             if (!shortcode)
                                 return;
@@ -78,7 +79,7 @@
                             shortcode = shortcode.shortcode;
 
                             attachments = wp.media.gallery.attachments(shortcode); //vrací query
-
+                            
                             selection = new wp.media.model.Selection(attachments.models, {
                                 props: attachments.props.toJSON(),
                                 multiple: true
@@ -103,9 +104,10 @@
 
                     },
                     frame: function() {
+                        
                         //If is blank element - open ADD to gallery
                         if (scope.componentPicker == '') {
-                            galleryState = 'gallery-library'
+                            galleryState = 'gallery-library';
                         // If is element open second time - open edit gallery
                         }else if(this._frame && galleryState == 'gallery-library'){
                             galleryState = 'gallery-edit';
@@ -115,7 +117,6 @@
                         }
 
                         var selection = this.select();
-
                         //Attributes for open wordpress mediapicker
                         this._frame = wp.media({
                             id: 'jaw_jaw_gallerypicker',
